@@ -1,0 +1,59 @@
+docker image build -t hadoop-new .
+
+
+docker network create --driver bridge hadoop_network
+
+
+docker compose up -d
+
+
+docker container exec -ti master bash
+
+
+hdfs namenode -format
+
+
+$HADOOP_HOME/sbin/start-dfs.sh
+
+
+cd data/
+
+
+
+hdfs dfs -put players.csv hdfs:///input
+
+
+
+$HADOOP_HOME/sbin/start-yarn.sh
+
+
+
+hadoop jar MapReduce.jar /input /output
+
+
+
+hdfs dfs -cat /output/part-r-00000 > players.txt
+
+
+
+hdfs dfs -rm -r hdfs:///input
+
+
+
+hdfs dfs -rm -r hdfs:///output
+
+
+
+$HADOOP_HOME/sbin/stop-dfs.sh
+
+
+
+$HADOOP_HOME/sbin/stop-yarn.sh
+
+
+
+docker ps
+
+
+
+docker stop NOME_O_ID_CONTAINER
